@@ -20,9 +20,18 @@ if (!$list) {
     <li itemscope itemtype="https://schema.org/Article">
         <a href="<?php echo $item->link; ?>" itemprop="url">
             <span itemprop="name">
+
                 <?php echo $item->title; ?>
+                <br>
             </span>
         </a>
+    <?php echo $item->author; ?>
+    <br>
+    <?php echo $item->title; ?>
+    <br>
+    <?php echo $item->modified; ?>
+    <br>
+    <?php echo $item->introtext; ?>
     </li>
 <?php endforeach; ?>
 </ul>
