@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @package     Joomla.Site
- * @subpackage  mod_articles_latest
- *
- * @copyright   (C) 2022 Open Source Matters, Inc. <https://www.joomla.org>
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- */
-
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Extension\Service\Provider\HelperFactory;
@@ -17,7 +9,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 
 /**
- * The article latest module service provider.
+ * The OSPP2023 module service provider.
  *
  * @since  4.2.0
  */
@@ -28,13 +20,12 @@ return new class () implements ServiceProviderInterface {
      * @param   Container  $container  The DI container.
      *
      * @return  void
-     *
-     * @since   4.2.0
      */
     public function register(Container $container)
     {
-        $container->registerServiceProvider(new ModuleDispatcherFactory('\\Joomla\\Module\\ArticlesLatest'));
-        $container->registerServiceProvider(new HelperFactory('\\Joomla\\Module\\ArticlesLatest\\Site\\Helper'));
+
+        $container->registerServiceProvider(new ModuleDispatcherFactory('\\Joomla\\Module\\OSPP2023'));
+        $container->registerServiceProvider(new HelperFactory('\\Joomla\\Module\\OSPP2023\\Site\\Helper'));
 
         $container->registerServiceProvider(new Module());
     }

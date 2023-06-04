@@ -1,14 +1,7 @@
 <?php
 
-/**
- * @package     Joomla.Site
- * @subpackage  mod_articles_latest
- *
- * @copyright   (C) 2006 Open Source Matters, Inc. <https://www.joomla.org>
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- */
 
-namespace Joomla\Module\ArticlesLatest\Site\Helper;
+namespace Joomla\Module\OSPP2023\Site\Helper;
 
 use Joomla\CMS\Access\Access;
 use Joomla\CMS\Application\SiteApplication;
@@ -26,12 +19,7 @@ use Joomla\Utilities\ArrayHelper;
 \defined('_JEXEC') or die;
 // phpcs:enable PSR1.Files.SideEffects
 
-/**
- * Helper for mod_articles_latest
- *
- * @since  1.6
- */
-class ArticlesLatestHelper implements DatabaseAwareInterface
+class OSPP2023Helper implements DatabaseAwareInterface
 {
     use DatabaseAwareTrait;
 
@@ -42,8 +30,6 @@ class ArticlesLatestHelper implements DatabaseAwareInterface
      * @param   ArticlesModel  $model   The model.
      *
      * @return  mixed
-     *
-     * @since   4.2.0
      */
     public function getArticles(Registry $params, SiteApplication $app)
     {
@@ -60,9 +46,8 @@ class ArticlesLatestHelper implements DatabaseAwareInterface
         $model->setState('list.start', 0);
         $model->setState('filter.published', 1);
 
-        // Set the filters based on the module params
-        $model->setState('list.limit', (int) $params->get('count', 5));
-
+        //Set the number of articles to 3
+        $model->setState('list.limit', 3);
         // This module does not use tags data
         $model->setState('load_tags', false);
 
@@ -77,57 +62,15 @@ class ArticlesLatestHelper implements DatabaseAwareInterface
         // State filter
         $model->setState('filter.condition', 1);
 
-        // User filter
-        $userId = $user->get('id');
-
-        switch ($params->get('user_id')) {
-            case 'by_me':
-                $model->setState('filter.author_id', (int) $userId);
-                break;
-            case 'not_me':
-                $model->setState('filter.author_id', $userId);
-                $model->setState('filter.author_id.include', false);
-                break;
-
-            case 'created_by':
-                $model->setState('filter.author_id', $params->get('author', []));
-                break;
-
-            case '0':
-                break;
-
-            default:
-                $model->setState('filter.author_id', (int) $params->get('user_id'));
-                break;
-        }
 
         // Filter by language
         $model->setState('filter.language', $app->getLanguageFilter());
 
-        // Featured switch
-        $featured = $params->get('show_featured', '');
 
-        if ($featured === '') {
-            $model->setState('filter.featured', 'show');
-        } elseif ($featured) {
-            $model->setState('filter.featured', 'only');
-        } else {
-            $model->setState('filter.featured', 'hide');
-        }
-
-        // Set ordering
-        $order_map = [
-            'm_dsc'  => 'a.modified DESC, a.created',
-            'mc_dsc' => 'a.modified',
-            'c_dsc'  => 'a.created',
-            'p_dsc'  => 'a.publish_up',
-            'random' => $db->getQuery(true)->rand(),
-        ];
-
-        $ordering = ArrayHelper::getValue($order_map, $params->get('ordering', 'p_dsc'), 'a.publish_up');
         $dir      = 'DESC';
 
-        $model->setState('list.ordering', $ordering);
+        //order articles by last modified
+        $model->setState('list.ordering', 'a.modified');
         $model->setState('list.direction', $dir);
 
         $items = $model->getItems();
@@ -153,14 +96,6 @@ class ArticlesLatestHelper implements DatabaseAwareInterface
      * @param   ArticlesModel  $model   The model.
      *
      * @return  mixed
-     *
-     * @since   1.6
-     *
-     * @deprecated 4.3 will be removed in 6.0
-     *             Use the non-static method getArticles
-     *             Example: Factory::getApplication()->bootModule('mod_articles_latest', 'site')
-     *                          ->getHelper('ArticlesLatestHelper')
-     *                          ->getArticles($params, Factory::getApplication())
      */
     public static function getList(Registry $params, ArticlesModel $model)
     {
